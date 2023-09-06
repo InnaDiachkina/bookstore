@@ -9,7 +9,6 @@ import com.bookstore.model.Book;
 import com.bookstore.repository.book.BookRepository;
 import com.bookstore.repository.book.BookSpecificationBuilder;
 import com.bookstore.service.BookService;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

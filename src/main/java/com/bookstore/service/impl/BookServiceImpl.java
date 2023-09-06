@@ -48,8 +48,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto update(Long id, CreateBookRequestDto bookRequestDto) {
-        Book book = bookMapper.toModel(bookRequestDto);
-        book.setId(id);
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Can't find book by id " + id));
+        book.setTitle(bookRequestDto.getTitle());
+        book.setAuthor(bookRequestDto.getAuthor());
+        book.setIsbn(bookRequestDto.getIsbn());
+        book.setCoverImage(bookRequestDto.getCoverImage());
+        book.setDescription(bookRequestDto.getDescription());
+        book.setPrice(bookRequestDto.getPrice());
         return bookMapper.toDto(bookRepository.save(book));
     }
 
@@ -57,6 +63,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDto> search(BookSearchParametersDto searchParameters) {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
         return bookRepository.findAll(bookSpecification).stream()
-                .map(bookMapper::toDto).toList();
+                .map(bookMapper::toDto)
+                .toList();
     }
 }

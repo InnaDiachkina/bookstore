@@ -1,8 +1,8 @@
 package com.bookstore.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import lombok.Data;
 import org.hibernate.validator.constraints.ISBN;
@@ -11,18 +11,16 @@ import org.hibernate.validator.constraints.ISBN;
 @Schema(name = "CreateBookRequestDto",
         description = "Object for creating a new book.")
 public class CreateBookRequestDto {
-    @NotNull
+    @NotBlank
     @Schema(description = "Title", example = "book1", required = true)
     private String title;
-    @NotNull
+    @NotBlank
     @Schema(description = "Author", example = "author1", required = true)
     private String author;
-    @NotNull
     @ISBN
     @Schema(description = "ISBN", example = "978-0735619678", required = true)
     private String isbn;
-    @NotNull
-    @Min(value = 0)
+    @DecimalMin(value = "0.00")
     @Schema(description = "Price", example = "100", required = true)
     private BigDecimal price;
 

@@ -74,7 +74,8 @@ public class BookServiceImpl implements BookService {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
         Pageable pageable = getPageable(page, size, sort);
         return bookRepository.findAll(bookSpecification, pageable).stream()
-                .map(bookMapper::toDto).toList();
+                .map(bookMapper::toDto)
+          .toList();
     }
 
     @Override

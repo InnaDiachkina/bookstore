@@ -16,7 +16,6 @@ public class CreateBookRequestDto {
     private String title;
     @NotBlank
     @Schema(description = "Author", example = "author1", required = true)
-    private String title;
     @NotBlank
     private String author;
     @ISBN

@@ -54,4 +54,13 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         errorsInfo.put("error", ex.getMessage());
         return new ResponseEntity<>(errorsInfo, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<Object> handleRegistrationException(RegistrationException ex) {
+        Map<String, Object> errorsInfo = new LinkedHashMap<>();
+        errorsInfo.put("timestamp", LocalDate.now());
+        errorsInfo.put("status", HttpStatus.BAD_REQUEST);
+        errorsInfo.put("error", ex.getMessage());
+        return new ResponseEntity<>(errorsInfo, HttpStatus.BAD_REQUEST);
+    }
 }

@@ -1,6 +1,6 @@
 package com.bookstore.repository.book;
 
-import com.bookstore.dto.request.BookSearchParametersDto;
+import com.bookstore.dto.book.request.BookSearchParametersDto;
 import com.bookstore.model.Book;
 import com.bookstore.repository.SpecificationBuilder;
 import lombok.RequiredArgsConstructor;

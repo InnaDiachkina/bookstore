@@ -1,13 +1,13 @@
-package com.bookstore.dto.response;
+package com.bookstore.dto.book.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import lombok.Data;
 
 @Data
-@Schema(name = "BookDto",
+@Schema(name = "BookResponseDto",
         description = "Represents a book object for response.")
-public class BookDto {
+public class BookResponseDto {
     @Schema(description = "Book ID", example = "1")
     private Long id;
     @Schema(description = "Title", example = "book1")

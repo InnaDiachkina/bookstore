@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: inna
+      changes:
+        - sql:
+            sql: INSERT INTO roles (name) VALUES ('USER')
+
+  - changeSet:
+      id: 2
+      author: inna
+      changes:
+        - sql:
+            sql: INSERT INTO roles (name) VALUES ('ADMIN')

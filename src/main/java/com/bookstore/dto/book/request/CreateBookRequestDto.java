@@ -1,4 +1,4 @@
-package com.bookstore.dto.request;
+package com.bookstore.dto.book.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
@@ -16,7 +16,6 @@ public class CreateBookRequestDto {
     private String title;
     @NotBlank
     @Schema(description = "Author", example = "author1", required = true)
-    @NotBlank
     private String author;
     @ISBN
     @Schema(description = "ISBN", example = "978-0735619678", required = true)

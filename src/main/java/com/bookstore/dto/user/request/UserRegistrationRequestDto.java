@@ -1,8 +1,8 @@
 package com.bookstore.dto.user.request;
 
 import com.bookstore.lib.FieldsValueMatch;
+import com.bookstore.lib.ValidEmail;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -17,9 +17,7 @@ import lombok.ToString;
 )
 @Schema(name = "UserRegistrationRequestDto", description = "Object for registering a new user")
 public class UserRegistrationRequestDto {
-    @NotBlank
-    @Email
-    @Size(min = 8, max = 25)
+    @ValidEmail
     @Schema(description = "Email", example = "john.doe@example.com")
     private String email;
     @NotBlank

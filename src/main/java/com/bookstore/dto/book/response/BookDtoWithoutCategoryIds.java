@@ -2,13 +2,12 @@ package com.bookstore.dto.book.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
-import java.util.Set;
 import lombok.Data;
 
 @Data
-@Schema(name = "BookResponseDto",
+@Schema(name = "BookDtoWithoutCategoryIds",
         description = "Represents a book object for response.")
-public class BookResponseDto {
+public class BookDtoWithoutCategoryIds {
     @Schema(description = "Book ID", example = "1")
     private Long id;
     @Schema(description = "Title", example = "book1")
@@ -23,6 +22,4 @@ public class BookResponseDto {
     private String description;
     @Schema(description = "Cover image", example = "cover image1")
     private String coverImage;
-    @Schema(description = "Category IDs", example = "[1, 2]")
-    private Set<Long> categoryIds;
 }

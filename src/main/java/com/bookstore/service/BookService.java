@@ -2,9 +2,11 @@ package com.bookstore.service;
 
 import com.bookstore.dto.book.request.BookSearchParametersDto;
 import com.bookstore.dto.book.request.CreateBookRequestDto;
+import com.bookstore.dto.book.response.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.book.response.BookResponseDto;
+import com.bookstore.model.Category;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
+import java.util.Set;
 
 public interface BookService {
     BookResponseDto save(CreateBookRequestDto bookRequestDto);
@@ -20,5 +22,8 @@ public interface BookService {
     List<BookResponseDto> search(BookSearchParametersDto searchParameters,
                                  int page, int size, String sort);
 
-    Pageable getPageable(int page, int size, String sort);
+    List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long categoryId,
+                                int page, int size, String sort);
+
+    Set<Category> getCategories(Set<Long> categoryIds);
 }

@@ -113,7 +113,7 @@ public class BookController {
     public BookResponseDto update(@Parameter(description = "Book ID", in = ParameterIn.PATH,
             required = true, schema = @Schema(type = "integer", format = "int64",
             example = "1")) @PathVariable Long id, @Parameter(description =
-            "Request body for updating a new book", required = true,
+            "Request body for updating a book", required = true,
             content = @Content(schema = @Schema(implementation = CreateBookRequestDto.class)))
             @RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);

@@ -4,12 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.Set;
 import lombok.Data;
 import org.hibernate.validator.constraints.ISBN;
 
 @Data
 @Schema(name = "CreateBookRequestDto",
-        description = "Object for creating a new book.")
+        description = "Object for creating a new book or updating.")
 public class CreateBookRequestDto {
     @NotBlank
     @Schema(description = "Title", example = "book1", required = true)
@@ -29,4 +30,6 @@ public class CreateBookRequestDto {
 
     @Schema(description = "Cover image", example = "cover image1")
     private String coverImage;
+    @Schema(description = "Categories associated with the book", example = "[1, 2]")
+    private Set<Long> categoryIds;
 }

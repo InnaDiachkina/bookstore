@@ -1,5 +1,6 @@
 package com.bookstore.security;
 
+import com.bookstore.dto.shoppingcart.ShoppingCartRequestDto;
 import com.bookstore.dto.user.request.UserLoginRequestDto;
 import com.bookstore.dto.user.request.UserRegistrationRequestDto;
 import com.bookstore.dto.user.response.UserLoginResponseDto;
@@ -10,6 +11,8 @@ import com.bookstore.model.Role;
 import com.bookstore.model.User;
 import com.bookstore.repository.user.RoleRepository;
 import com.bookstore.repository.user.UserRepository;
+import com.bookstore.service.ShoppingCartService;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +30,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     public UserLoginResponseDto authenticate(UserLoginRequestDto requestDto) {
         final Authentication authentication = authenticationManager.authenticate(
@@ -56,6 +60,12 @@ public class AuthenticationService {
             user.setRoles(Set.of(userRole));
         }
         User savedUser = userRepository.save(user);
+        UserResponseDto responseDto = userMapper.toDto(userRepository.save(savedUser));
+        ShoppingCartRequestDto shoppingCart = new ShoppingCartRequestDto();
+        shoppingCart.setUserId(responseDto.getId());
+        Set<Long> cartItemIds = new HashSet<>();
+        shoppingCart.setCartItemIds(cartItemIds);
+        shoppingCartService.save(shoppingCart);
         return userMapper.toDto(userRepository.save(savedUser));
     }
 }

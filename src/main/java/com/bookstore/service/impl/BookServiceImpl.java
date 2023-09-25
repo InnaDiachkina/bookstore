@@ -12,7 +12,7 @@ import com.bookstore.repository.book.BookRepository;
 import com.bookstore.repository.book.BookSpecificationBuilder;
 import com.bookstore.repository.category.CategoryRepository;
 import com.bookstore.service.BookService;
-import com.bookstore.service.CreatePageable;
+import com.bookstore.util.PageableUtil;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,12 +24,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
-    private static final String SEMICOLON_DELIMITER = ";";
-    private static final String COMMA_DELIMITER = ",";
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
-    private final CreatePageable createPageable;
+    private final PageableUtil createPageable;
     private final CategoryRepository categoryRepository;
 
     @Override

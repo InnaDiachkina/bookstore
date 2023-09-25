@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Schema(name = "CreateCategoryRequestDto",
-        description = "Object for creating a new category or updating.")
+        description = "Object used for creating or updating a category.")
 public class CreateCategoryRequestDto {
     @NotBlank
     @Schema(description = "Name", example = "category1", required = true)

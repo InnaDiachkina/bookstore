@@ -1,4 +1,4 @@
-package com.bookstore.service;
+package com.bookstore.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreatePageable {
+public class PageableUtil {
 
     private static final String SEMICOLON_DELIMITER = ";";
     private static final String COMMA_DELIMITER = ",";

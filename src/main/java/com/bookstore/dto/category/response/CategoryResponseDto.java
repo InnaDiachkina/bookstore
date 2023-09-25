@@ -9,7 +9,7 @@ import lombok.Data;
 public class CategoryResponseDto {
     @Schema(description = "Category ID", example = "1")
     private Long id;
-    @Schema(description = "Name", example = "category1", required = true)
+    @Schema(description = "Name", example = "category1")
     private String name;
     @Schema(description = "Description", example = "description1")
     private String description;

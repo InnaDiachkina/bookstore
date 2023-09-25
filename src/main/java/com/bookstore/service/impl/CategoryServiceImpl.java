@@ -7,7 +7,7 @@ import com.bookstore.mapper.CategoryMapper;
 import com.bookstore.model.Category;
 import com.bookstore.repository.category.CategoryRepository;
 import com.bookstore.service.CategoryService;
-import com.bookstore.service.CreatePageable;
+import com.bookstore.util.PageableUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final CreatePageable createPageable;
+    private final PageableUtil createPageable;
 
     @Override
     public List<CategoryResponseDto> findAll(int page, int size, String sort) {

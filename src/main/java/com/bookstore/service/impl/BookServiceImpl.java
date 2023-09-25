@@ -1,8 +1,8 @@
 package com.bookstore.service.impl;
 
-import com.bookstore.dto.request.BookSearchParametersDto;
-import com.bookstore.dto.request.CreateBookRequestDto;
-import com.bookstore.dto.response.BookDto;
+import com.bookstore.dto.book.request.BookSearchParametersDto;
+import com.bookstore.dto.book.request.CreateBookRequestDto;
+import com.bookstore.dto.book.response.BookResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
@@ -29,12 +29,12 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
-    public BookDto save(CreateBookRequestDto bookRequestDto) {
+    public BookResponseDto save(CreateBookRequestDto bookRequestDto) {
         return bookMapper.toDto(bookRepository.save(bookMapper.toModel(bookRequestDto)));
     }
 
     @Override
-    public List<BookDto> findAll(int page, int size, String sort) {
+    public List<BookResponseDto> findAll(int page, int size, String sort) {
         Pageable pageable = getPageable(page, size, sort);
         return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
@@ -42,7 +42,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto findById(Long id) {
+    public BookResponseDto findById(Long id) {
         Book book = bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find book by id " + id));
         return bookMapper.toDto(book);
@@ -56,7 +56,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto update(Long id, CreateBookRequestDto bookRequestDto) {
+    public BookResponseDto update(Long id, CreateBookRequestDto bookRequestDto) {
         Book book = bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find book by id " + id));
         book.setTitle(bookRequestDto.getTitle());
@@ -69,8 +69,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> search(BookSearchParametersDto searchParameters,
-                                int page, int size, String sort) {
+    public List<BookResponseDto> search(BookSearchParametersDto searchParameters,
+                                        int page, int size, String sort) {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
         Pageable pageable = getPageable(page, size, sort);
         return bookRepository.findAll(bookSpecification, pageable).stream()

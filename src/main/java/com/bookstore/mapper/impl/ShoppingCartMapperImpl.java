@@ -1,8 +1,10 @@
-package com.bookstore.mapper;
+package com.bookstore.mapper.impl;
 
 import com.bookstore.dto.shoppingcart.ShoppingCartRequestDto;
 import com.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
+import com.bookstore.mapper.CartItemMapper;
+import com.bookstore.mapper.ShoppingCartMapper;
 import com.bookstore.model.CartItem;
 import com.bookstore.model.ShoppingCart;
 import com.bookstore.repository.shoppingcart.CartItemRepository;

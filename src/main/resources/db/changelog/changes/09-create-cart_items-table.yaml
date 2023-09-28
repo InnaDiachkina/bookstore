@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-shopping-carts-table
+      id: create-cart_items-table
       author: inna
       changes:
         - createTable:
-            tableName: shopping_carts
+            tableName: cart_items
             columns:
               - column:
                   name: id
@@ -14,8 +14,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: user_id
+                  name: shopping_cart_id
                   type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: book_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: integer
                   constraints:
                     nullable: false
               - column:

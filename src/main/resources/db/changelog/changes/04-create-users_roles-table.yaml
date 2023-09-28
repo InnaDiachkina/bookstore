@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-roles-table.yaml
+      id: create-users_roles-table.yaml
       author: inna
       changes:
         - createTable:

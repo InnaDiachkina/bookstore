@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
@@ -34,12 +34,9 @@ public class AuthenticationController {
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Registration a new user", description = "Registration a new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "New User registered successfully",
-                    content = {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = UserResponseDto.class))
-                    })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description =
+            "New User registered successfully", content = {@Content(mediaType =
+            "application/json", schema = @Schema(implementation = UserResponseDto.class))})})
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto)
             throws UserRegistrationException {
         return authenticationService.register(requestDto);

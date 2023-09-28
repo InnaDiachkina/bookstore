@@ -5,15 +5,13 @@ import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
-@Service
 public class PageableUtil {
 
     private static final String SEMICOLON_DELIMITER = ";";
     private static final String COMMA_DELIMITER = ",";
 
-    public Pageable getPageable(int page, int size, String sort) {
+    public static Pageable getPageable(int page, int size, String sort) {
         String[] sortParts = sort.split(SEMICOLON_DELIMITER);
         List<Sort.Order> orders = new ArrayList<>();
         for (String sortPart : sortParts) {

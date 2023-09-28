@@ -1,8 +1,8 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.book.response.BookDtoWithoutCategoryIds;
-import com.bookstore.dto.category.request.CreateCategoryRequestDto;
-import com.bookstore.dto.category.response.CategoryResponseDto;
+import com.bookstore.dto.category.CategoryResponseDto;
+import com.bookstore.dto.category.CreateCategoryRequestDto;
 import com.bookstore.service.BookService;
 import com.bookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,21 +33,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Category management", description = "Endpoints for managing categories")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
-    @GetMapping()
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @Operation(summary = "Get all categories", description =
             "Get a list of all available categories")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
-                    @Schema(implementation = CategoryResponseDto.class)))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", array = @ArraySchema(
+                    schema = @Schema(implementation = CategoryResponseDto.class)))})})
     public List<CategoryResponseDto> getAll(
             @Parameter(description = "Page number",
                     schema = @Schema(type = "integer", example = "0", defaultValue = "0"))
@@ -60,56 +57,44 @@ public class CategoryController {
             @Parameter(description = "Sorting criteria",
                     schema = @Schema(type = "string", example = "name,asc;description,desc",
                             defaultValue = "id,asc"))
-            @RequestParam(name = "sort", defaultValue = "id,asc") String sort
-    ) {
+            @RequestParam(name = "sort", defaultValue = "id,asc") String sort) {
         return categoryService.findAll(page, size, sort);
     }
 
-    @PostMapping()
-    @Secured("ROLE_ADMIN")
+    @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new category", description = "Create a new category")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Book created successfully",
-                    content = {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = CategoryResponseDto.class))
-                    })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Book created "
+            + "successfully", content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = CategoryResponseDto.class))})})
     public CategoryResponseDto createCategory(
             @Parameter(description = "Request body for creating a new category",
-            required = true, content = @Content(
-                    schema = @Schema(implementation = CreateCategoryRequestDto.class)))
-            @RequestBody @Valid CreateCategoryRequestDto categoryRequestDto
-    ) {
+                    required = true, content = @Content(schema =
+            @Schema(implementation = CreateCategoryRequestDto.class)))
+            @RequestBody @Valid CreateCategoryRequestDto categoryRequestDto) {
         return categoryService.save(categoryRequestDto);
     }
 
-    @GetMapping(value = "/{id}")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @Operation(summary = "Get a category by id", description = "Get a category by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryResponseDto.class))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = CategoryResponseDto.class))})})
     public CategoryResponseDto getCategoryById(
             @Parameter(description = "Category ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
         return categoryService.findById(id);
     }
 
     @PutMapping("/{id}")
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update a category by id", description = "Update a category by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CategoryResponseDto.class))
-                    })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = CategoryResponseDto.class))})})
     public CategoryResponseDto update(
             @Parameter(description = "Category ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
@@ -117,33 +102,28 @@ public class CategoryController {
 
             @Parameter(description = "Request body for updating a category", required = true,
             content = @Content(schema = @Schema(implementation = CreateCategoryRequestDto.class)))
-            @RequestBody @Valid CreateCategoryRequestDto requestDto
-    ) {
+            @RequestBody @Valid CreateCategoryRequestDto requestDto) {
         return categoryService.update(id, requestDto);
     }
 
     @DeleteMapping("/{id}")
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a category by id", description = "Delete a category by id from db")
     public void delete(
             @Parameter(description = "Category ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
         categoryService.deleteById(id);
     }
 
     @GetMapping("/{id}/books")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @Operation(summary = "Get all books by category id", description =
             "Get list of all books by category id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDtoWithoutCategoryIds.class))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", array = @ArraySchema(schema =
+            @Schema(implementation = BookDtoWithoutCategoryIds.class)))})})
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(
             @Parameter(description = "Page number",
                     schema = @Schema(type = "integer", example = "0", defaultValue = "0"))
@@ -160,8 +140,7 @@ public class CategoryController {
 
             @Parameter(description = "Category ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
         return bookService.findAllByCategoryId(id, page, size, sort);
     }
 }

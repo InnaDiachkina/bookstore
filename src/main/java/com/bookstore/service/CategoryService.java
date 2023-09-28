@@ -1,7 +1,7 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.category.request.CreateCategoryRequestDto;
-import com.bookstore.dto.category.response.CategoryResponseDto;
+import com.bookstore.dto.category.CategoryResponseDto;
+import com.bookstore.dto.category.CreateCategoryRequestDto;
 import java.util.List;
 
 public interface CategoryService {

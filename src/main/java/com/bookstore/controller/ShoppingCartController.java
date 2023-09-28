@@ -6,7 +6,6 @@ import com.bookstore.dto.shoppingcart.ShoppingCartResponseDto;
 import com.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,24 +26,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Shopping cart management", description = "Endpoints for managing shopping cart")
+@Tag(name = "Shopping cart management", description = "Endpoints for managing shopping carts")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/cart")
+@RequestMapping("/api/cart")
 public class ShoppingCartController {
     private final ShoppingCartService shoppingCartService;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Get shopping cart", description = "Get user's shopping cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json", array = @ArraySchema(schema =
-                    @Schema(implementation = ShoppingCartResponseDto.class)))
-            })
-    })
-    public ShoppingCartResponseDto getShoppingCart(@Parameter(description =
-            "User's authentication information", hidden = true)Authentication authentication) {
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = ShoppingCartResponseDto.class))})})
+    public ShoppingCartResponseDto getShoppingCart(
+            @Parameter(description = "User's authentication information", hidden = true)
+            Authentication authentication) {
         String email = authentication.getName();
         return shoppingCartService.findByUserEmail(email);
     }
@@ -52,15 +49,14 @@ public class ShoppingCartController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Add cart item", description = "Add cart item to shopping cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cart item added successfully",
-                    content = {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = ShoppingCartResponseDto.class))
-                    })
-    })
-    public CartItemResponseDto addCartItemToShoppingCart(@Parameter(description =
-            "User's authentication information", hidden = true) Authentication authentication,
-            @Parameter(description = "Object for add cart item", required = true)
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Cart item added "
+            + "successfully", content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = CartItemResponseDto.class))})})
+    public CartItemResponseDto addCartItemToShoppingCart(
+            @Parameter(description = "User's authentication information", hidden = true)
+            Authentication authentication,
+
+            @Parameter(description = "Object for adding cart item", required = true)
             @RequestBody CreateCartItemRequestDto requestDto) {
         String email = authentication.getName();
         return shoppingCartService.addCartItemToShoppingCart(email, requestDto);
@@ -68,19 +64,19 @@ public class ShoppingCartController {
 
     @PutMapping("/cart_items/{cartItemId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Update cart item", description =
-            "Update cart item's quantity from shopping cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Cart item update successfully",
-                    content = {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = ShoppingCartResponseDto.class))
-                    })
-    })
-    public CartItemResponseDto updateCartItemFromShoppingCart(@Parameter(description =
-            "User's authentication information", hidden = true) Authentication authentication,
-            @Parameter(description = "New quantity for the cart item", required = true)
-            @RequestParam int quantity, @Parameter(description = "ID of the cart item to update",
-            required = true) @PathVariable Long cartItemId) {
+    @Operation(summary = "Update cart item", description = "Update quantity of cart item")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Cart item update "
+            + "successfully", content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = CartItemResponseDto.class))})})
+    public CartItemResponseDto updateCartItemFromShoppingCart(
+            @Parameter(description = "User's authentication information", hidden = true)
+            Authentication authentication,
+
+            @Parameter(description = "Quantity for updating cart item", required = true)
+            @RequestParam int quantity,
+
+            @Parameter(description = "ID of the cart item to update", required = true)
+            @PathVariable Long cartItemId) {
         String email = authentication.getName();
         return shoppingCartService.updateQuantity(email, quantity, cartItemId);
     }
@@ -90,8 +86,8 @@ public class ShoppingCartController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete cart item", description = "Delete cart item from shopping cart")
     public void deleteCartItemFromShoppingCart(
-            @Parameter(description = "ID of the cart item to delete",
-            required = true) @PathVariable Long cartItemId) {
+            @Parameter(description = "ID of the cart item to delete", required = true)
+            @PathVariable Long cartItemId) {
         shoppingCartService.deleteCartItem(cartItemId);
     }
 }

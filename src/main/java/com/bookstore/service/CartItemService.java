@@ -14,4 +14,6 @@ public interface CartItemService {
     CartItemResponseDto update(int quantity, Long id);
 
     CartItemResponseDto save(CartItem cartItem);
+
+    void delete(CartItem cartItem);
 }

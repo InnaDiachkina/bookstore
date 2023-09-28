@@ -1,7 +1,7 @@
 package com.bookstore.service.impl;
 
-import com.bookstore.dto.category.request.CreateCategoryRequestDto;
-import com.bookstore.dto.category.response.CategoryResponseDto;
+import com.bookstore.dto.category.CategoryResponseDto;
+import com.bookstore.dto.category.CreateCategoryRequestDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.CategoryMapper;
 import com.bookstore.model.Category;
@@ -19,11 +19,10 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final PageableUtil createPageable;
 
     @Override
     public List<CategoryResponseDto> findAll(int page, int size, String sort) {
-        Pageable pageable = createPageable.getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return categoryRepository.findAll(pageable).stream()
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());

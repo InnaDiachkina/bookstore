@@ -1,7 +1,8 @@
-package com.bookstore.mapper;
+package com.bookstore.mapper.impl;
 
 import com.bookstore.dto.cartitem.CartItemResponseDto;
 import com.bookstore.dto.cartitem.CreateCartItemRequestDto;
+import com.bookstore.mapper.CartItemMapper;
 import com.bookstore.model.CartItem;
 import com.bookstore.repository.book.BookRepository;
 import lombok.RequiredArgsConstructor;

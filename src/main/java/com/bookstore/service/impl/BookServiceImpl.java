@@ -27,7 +27,6 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
-    private final PageableUtil createPageable;
     private final CategoryRepository categoryRepository;
 
     @Override
@@ -39,7 +38,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookResponseDto> findAll(int page, int size, String sort) {
-        Pageable pageable = createPageable.getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
@@ -77,7 +76,7 @@ public class BookServiceImpl implements BookService {
     public List<BookResponseDto> search(BookSearchParametersDto searchParameters,
                                         int page, int size, String sort) {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
-        Pageable pageable = createPageable.getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return bookRepository.findAll(bookSpecification, pageable).stream()
                 .map(bookMapper::toDto)
           .toList();
@@ -86,7 +85,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long categoryId,
                                       int page, int size, String sort) {
-        Pageable pageable = createPageable.getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return bookRepository.findBooksByCategoryId(categoryId, pageable).stream()
                 .map(bookMapper::toDtoWithoutCategories)
                 .toList();

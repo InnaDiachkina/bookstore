@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,19 +32,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Book management", description = "Endpoints for managing books")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/books")
+@RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @Operation(summary = "Get all books", description = "Get a list of all available books")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = BookResponseDto.class)))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", array =
+            @ArraySchema(schema = @Schema(implementation = BookResponseDto.class)))})})
     public List<BookResponseDto> getAll(
             @Parameter(description = "Page number",
                 schema = @Schema(type = "integer", example = "0", defaultValue = "0"))
@@ -57,67 +54,54 @@ public class BookController {
             @Parameter(description = "Sorting criteria",
                 schema = @Schema(type = "string", example = "price,asc;title,desc",
                         defaultValue = "id,asc"))
-            @RequestParam(name = "sort", defaultValue = "id,asc") String sort
-    ) {
+            @RequestParam(name = "sort", defaultValue = "id,asc") String sort) {
         return bookService.findAll(page, size, sort);
     }
 
     @PostMapping
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new book", description = "Create a new book")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Book created successfully",
-                    content = {@Content(mediaType = "application/json", schema =
-                    @Schema(implementation = BookResponseDto.class))
-            })
-    })
-    public BookResponseDto createBook(@Parameter(description =
-            "Request body for creating a new book",
-            required = true, content = @Content(schema = @Schema(implementation =
-            CreateBookRequestDto.class))) @RequestBody @Valid CreateBookRequestDto bookRequestDto) {
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Book created"
+            + "successfully", content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = BookResponseDto.class))})})
+    public BookResponseDto createBook(
+            @Parameter(description = "Object for creating a new book", required = true, content
+                    = @Content(schema = @Schema(implementation = CreateBookRequestDto.class)))
+            @RequestBody @Valid CreateBookRequestDto bookRequestDto) {
         return bookService.save(bookRequestDto);
     }
 
-    @GetMapping(value = "/{id}")
-    @Secured("ROLE_ADMIN")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Get a book by id", description = "Get a book by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation", content = {
-                    @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookResponseDto.class))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = BookResponseDto.class))})})
     public BookResponseDto getBookById(
-
             @Parameter(description = "Book ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
         return bookService.findById(id);
     }
 
     @DeleteMapping("/{id}")
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a book by id", description = "Delete a book by id from db")
     public void delete(
             @Parameter(description = "Book ID", in = ParameterIn.PATH, required = true,
             schema = @Schema(type = "integer", format = "int64", example = "1"))
-            @PathVariable Long id
-    ) {
+            @PathVariable Long id) {
         bookService.deleteById(id);
     }
 
     @PutMapping("/{id}")
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Update a book by id", description = "Update a book by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookResponseDto.class))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = BookResponseDto.class))})})
     public BookResponseDto update(
             @Parameter(description = "Book ID", in = ParameterIn.PATH, required = true,
                     schema = @Schema(type = "integer", format = "int64", example = "1"))
@@ -125,21 +109,17 @@ public class BookController {
 
             @Parameter(description = "Request body for updating a book", required = true,
             content = @Content(schema = @Schema(implementation = CreateBookRequestDto.class)))
-            @RequestBody @Valid CreateBookRequestDto requestDto
-    ) {
+            @RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
     }
 
     @GetMapping("/search")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
     @Operation(summary = "Search all books by parameters",
             description = "Get a list of all available book by parameters")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = {@Content(mediaType = "application/json", array =
-                    @ArraySchema(schema = @Schema(implementation = BookResponseDto.class)))
-            })
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation",
+            content = {@Content(mediaType = "application/json", array = @ArraySchema(
+                    schema = @Schema(implementation = BookResponseDto.class)))})})
     public List<BookResponseDto> searchBook(
             @Parameter(description = "Object for searching books by parameters")
             BookSearchParametersDto searchParameters,
@@ -155,8 +135,7 @@ public class BookController {
             @Parameter(description = "Sorting criteria",
                       schema = @Schema(type = "string", example = "price,asc;title,desc",
                                 defaultValue = "id,asc"))
-            @RequestParam(name = "sort", defaultValue = "title,asc") String sort
-    ) {
+            @RequestParam(name = "sort", defaultValue = "title,asc") String sort) {
         return bookService.search(searchParameters, page, size, sort);
     }
 }

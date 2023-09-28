@@ -16,4 +16,8 @@ public interface ShoppingCartService {
                                                   CreateCartItemRequestDto requestDto);
 
     void deleteCartItem(Long cartItemId);
+
+    void registerNewShoppingCart(String email);
+
+    void clearShoppingCart(String email);
 }

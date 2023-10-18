@@ -4,53 +4,53 @@ databaseChangeLog:
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('NEW')
+            sql: INSERT INTO order_statuses (name) VALUES ('NEW')
 
   - changeSet:
       id: 2
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('PROCESSING')
+            sql: INSERT INTO order_statuses (name) VALUES ('PROCESSING')
 
   - changeSet:
       id: 3
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('PAID')
+            sql: INSERT INTO order_statuses (name) VALUES ('PAID')
 
   - changeSet:
       id: 4
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('SHIPPED')
+            sql: INSERT INTO order_statuses (name) VALUES ('SHIPPED')
 
   - changeSet:
       id: 5
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('REFUNDED')
+            sql: INSERT INTO order_statuses (name) VALUES ('REFUNDED')
 
   - changeSet:
       id: 6
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('DELIVERED')
+            sql: INSERT INTO order_statuses (name) VALUES ('DELIVERED')
 
   - changeSet:
       id: 7
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('CANCELLED')
+            sql: INSERT INTO order_statuses (name) VALUES ('CANCELLED')
 
   - changeSet:
       id: 8
       author: inna
       changes:
         - sql:
-            sql: INSERT INTO statuses (name) VALUES ('COMPLETED')
+            sql: INSERT INTO order_statuses (name) VALUES ('COMPLETED')

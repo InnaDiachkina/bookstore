@@ -7,11 +7,11 @@ import com.bookstore.mapper.OrderMapper;
 import com.bookstore.model.CartItem;
 import com.bookstore.model.Order;
 import com.bookstore.model.OrderItem;
+import com.bookstore.model.OrderStatus;
 import com.bookstore.model.ShoppingCart;
-import com.bookstore.model.Status;
 import com.bookstore.model.User;
 import com.bookstore.repository.order.OrderRepository;
-import com.bookstore.repository.order.StatusRepository;
+import com.bookstore.repository.order.OrderStatusRepository;
 import com.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.bookstore.service.OrderService;
 import com.bookstore.service.ShoppingCartService;
@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartService shoppingCartService;
     private final UserService userService;
     private final OrderRepository orderRepository;
-    private final StatusRepository statusRepository;
+    private final OrderStatusRepository statusRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDto updateOrderStatus(String name, Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find order by id " + id));
-        Status status = statusRepository.findByName(Status.StatusName.valueOf(name));
+        OrderStatus status = statusRepository.findByName(OrderStatus.StatusName.valueOf(name));
         order.setStatus(status);
         return orderMapper.toDto(orderRepository.save(order));
     }
@@ -61,13 +61,13 @@ public class OrderServiceImpl implements OrderService {
         }
         Order order = new Order();
         order.setUser(user);
-        order.setStatus(statusRepository.findByName(Status.StatusName.NEW));
+        order.setStatus(statusRepository.findByName(OrderStatus.StatusName.NEW));
         order.setOrderDate(LocalDateTime.now());
         order.setShippingAddress(shippingAddress);
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(user.getId());
         Set<CartItem> cartItems = shoppingCart.getCartItems();
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("Can't create an order because shopping cart is empty.");
+            throw new EntityNotFoundException("Can't create order because shopping cart is empty.");
         }
         Set<OrderItem> orderItems = new HashSet<>();
         for (CartItem cartItem : cartItems) {

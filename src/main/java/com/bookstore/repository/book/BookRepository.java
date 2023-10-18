@@ -2,6 +2,7 @@ package com.bookstore.repository.book;
 
 import com.bookstore.model.Book;
 import java.util.List;
+import org.mapstruct.Named;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,5 +13,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     @Query("SELECT b FROM Book b JOIN b.categories c WHERE c.id = :categoryId")
     List<Book> findBooksByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 
+    @Named("FindBookById")
     Book findBookById(Long id);
 }

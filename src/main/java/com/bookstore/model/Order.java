@@ -33,7 +33,7 @@ public class Order {
     private User user;
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
-    private Status status;
+    private OrderStatus status;
     @Column(nullable = false)
     private BigDecimal total;
     @Column(nullable = false)

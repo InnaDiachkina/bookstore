@@ -9,6 +9,7 @@ import com.bookstore.mapper.CartItemMapper;
 import com.bookstore.mapper.impl.ShoppingCartMapperImpl;
 import com.bookstore.model.CartItem;
 import com.bookstore.model.ShoppingCart;
+import com.bookstore.repository.book.BookRepository;
 import com.bookstore.repository.shoppingcart.CartItemRepository;
 import com.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import com.bookstore.service.CartItemService;
@@ -27,6 +28,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final CartItemService cartItemService;
     private final ShoppingCartMapperImpl shoppingCartMapper;
     private final CartItemMapper cartItemMapper;
+    private final BookRepository bookRepository;
     private final CartItemRepository cartItemRepository;
 
     @Override
@@ -86,15 +88,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Long userId = userService.findByEmail(email).getId();
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
         Set<CartItem> cartItems = shoppingCart.getCartItems();
+        for (CartItem cartItem : cartItems) {
+            cartItem.setDeleted(true);
+            cartItemRepository.save(cartItem);
+        }
         shoppingCart.setCartItems(new HashSet<>());
-        for (CartItem cartItem : cartItems) {
-            cartItem.setDeleted(true);
-            cartItemRepository.save(cartItem);
-        }
         shoppingCartRepository.save(shoppingCart);
-        for (CartItem cartItem : cartItems) {
-            cartItem.setDeleted(true);
-            cartItemRepository.save(cartItem);
-        }
     }
 }

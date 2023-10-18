@@ -2,40 +2,43 @@ package com.bookstore.service.impl;
 
 import com.bookstore.dto.book.request.BookSearchParametersDto;
 import com.bookstore.dto.book.request.CreateBookRequestDto;
+import com.bookstore.dto.book.response.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.book.response.BookResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
+import com.bookstore.model.Category;
 import com.bookstore.repository.book.BookRepository;
 import com.bookstore.repository.book.BookSpecificationBuilder;
+import com.bookstore.repository.category.CategoryRepository;
 import com.bookstore.service.BookService;
-import java.util.ArrayList;
+import com.bookstore.util.PageableUtil;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
-    private static final String SEMICOLON_DELIMITER = ";";
-    private static final String COMMA_DELIMITER = ",";
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public BookResponseDto save(CreateBookRequestDto bookRequestDto) {
-        return bookMapper.toDto(bookRepository.save(bookMapper.toModel(bookRequestDto)));
+        Book book = bookMapper.toModel(bookRequestDto);
+        book.setCategories(getCategories(bookRequestDto.getCategoryIds()));
+        return bookMapper.toDto(bookRepository.save(book));
     }
 
     @Override
     public List<BookResponseDto> findAll(int page, int size, String sort) {
-        Pageable pageable = getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return bookRepository.findAll(pageable).stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
@@ -50,7 +53,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(Long id) {
-        Book book = bookRepository.findById(id).orElseThrow(() ->
+        bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find book by id " + id));
         bookRepository.deleteById(id);
     }
@@ -65,6 +68,7 @@ public class BookServiceImpl implements BookService {
         book.setCoverImage(bookRequestDto.getCoverImage());
         book.setDescription(bookRequestDto.getDescription());
         book.setPrice(bookRequestDto.getPrice());
+        book.setCategories(getCategories(bookRequestDto.getCategoryIds()));
         return bookMapper.toDto(bookRepository.save(book));
     }
 
@@ -72,22 +76,26 @@ public class BookServiceImpl implements BookService {
     public List<BookResponseDto> search(BookSearchParametersDto searchParameters,
                                         int page, int size, String sort) {
         Specification<Book> bookSpecification = bookSpecificationBuilder.build(searchParameters);
-        Pageable pageable = getPageable(page, size, sort);
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
         return bookRepository.findAll(bookSpecification, pageable).stream()
                 .map(bookMapper::toDto)
           .toList();
     }
 
     @Override
-    public Pageable getPageable(int page, int size, String sort) {
-        String[] sortParts = sort.split(SEMICOLON_DELIMITER);
-        List<Sort.Order> orders = new ArrayList<>();
-        for (String sortPart : sortParts) {
-            String[] sortFields = sortPart.split(COMMA_DELIMITER);
-            String sortField = sortFields[0];
-            Sort.Direction direction = Sort.Direction.fromString(sortFields[1]);
-            orders.add(new Sort.Order(direction, sortField));
-        }
-        return PageRequest.of(page, size, Sort.by(orders));
+    public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long categoryId,
+                                      int page, int size, String sort) {
+        Pageable pageable = PageableUtil.getPageable(page, size, sort);
+        return bookRepository.findBooksByCategoryId(categoryId, pageable).stream()
+                .map(bookMapper::toDtoWithoutCategories)
+                .toList();
+    }
+
+    @Override
+    public Set<Category> getCategories(Set<Long> categoryIds) {
+        return categoryIds.stream()
+                .map(id -> categoryRepository.findById(id).orElseThrow((() ->
+                        new EntityNotFoundException("Can't find category by id " + id))))
+                .collect(Collectors.toSet());
     }
 }

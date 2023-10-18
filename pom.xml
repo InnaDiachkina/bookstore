@@ -130,11 +130,11 @@
                 </executions>
                 <configuration>
                     <configLocation>${maven.checkstyle.plugin.configLocation}</configLocation>
-                    <excludes>com/bookstore/mapper/impl/*.java</excludes>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>
+                    <excludes>com/bookstore/mapper/impl/*.java</excludes>
                 </configuration>
             </plugin>
             <plugin>

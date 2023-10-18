@@ -15,7 +15,8 @@ import lombok.ToString;
         fieldMatch = "repeatPassword",
         message = "Passwords do not match!"
 )
-@Schema(name = "UserRegistrationRequestDto", description = "Object for registering a new user")
+@Schema(name = "UserRegistrationRequestDto",
+        description = "Object for registering a new user")
 public class UserRegistrationRequestDto {
     @ValidEmail
     @Schema(description = "Email", example = "john.doe@example.com")

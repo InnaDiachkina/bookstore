@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-users-roles-table.yaml
+      id: create-shopping_carts-table
       author: inna
       changes:
         - createTable:
-            tableName: users_roles
+            tableName: shopping_carts
             columns:
               - column:
                   name: id
@@ -16,6 +16,11 @@ databaseChangeLog:
               - column:
                   name: user_id
                   type: bigint
+                  constraints:
+                    nullable: false
               - column:
-                  name: role_id
-                  type: bigint
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
